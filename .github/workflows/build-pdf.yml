@@ -1,0 +1,38 @@
+name: Build 300MB PDF
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate PDF
+        run: python3 generate_pdf.py
+
+      - name: Verify size and pages
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y poppler-utils
+          ls -lh test_20_pages_300mb.pdf
+          test "$(stat -c%s test_20_pages_300mb.pdf)" = "314572800"
+          pdfinfo test_20_pages_300mb.pdf | grep '^Pages:'
+          test "$(pdfinfo test_20_pages_300mb.pdf | awk '/^Pages:/ {print $2}')" = "20"
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete pdf-300mb --cleanup-tag -y || true
+          gh release create pdf-300mb \
+            test_20_pages_300mb.pdf \
+            --title "20-page 300MB Test PDF" \
+            --notes "20-page PDF with an exact size of 300 MiB (314,572,800 bytes)."
