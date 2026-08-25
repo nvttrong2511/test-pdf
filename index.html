@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Trình tạo PDF dung lượng lớn</title>
   <meta name="description" content="Tạo file PDF dung lượng lớn trực tiếp trên trình duyệt để kiểm thử upload, lưu trữ và hiệu năng." />
-  <link rel="stylesheet" href="style.css?v=7" />
+  <link rel="stylesheet" href="style.css?v=8" />
 </head>
 <body>
   <main class="shell">
@@ -27,7 +27,6 @@
           <label><span>Dung lượng mục tiêu</span><div class="input-group"><input id="targetSize" type="number" min="1" step="1" value="300" /><select id="sizeUnit"><option value="mib">MB</option><option value="gib">GB</option></select></div></label>
         </div>
         <div class="preset-row"><button class="chip" data-size="10">10 MB</button><button class="chip" data-size="100">100 MB</button><button class="chip active" data-size="300">300 MB</button><button class="chip" data-size="500">500 MB</button><button class="chip" data-size="1024">1 GB</button></div>
-
         <div class="three-col advanced-row">
           <label><span>Khổ giấy</span><select id="pageSize"><option value="a4">A4</option><option value="letter">Letter</option><option value="legal">Legal</option></select></label>
           <label><span>Hướng giấy</span><select id="orientation"><option value="portrait">Dọc</option><option value="landscape">Ngang</option></select></label>
@@ -40,44 +39,24 @@
           <label><span>Mật độ chữ</span><select id="textDensity"><option value="low">Ít</option><option value="medium" selected>Vừa</option><option value="high">Nhiều</option></select></label>
           <label><span>Bố cục trang</span><select id="layoutMode"><option value="random">Trộn ngẫu nhiên</option><option value="text-image">Chữ trên + ảnh dưới</option><option value="image-text">Ảnh trên + chữ dưới</option><option value="full-image">Ảnh toàn trang</option><option value="text-only">Chỉ có chữ</option></select></label>
         </div>
-
         <label id="customTextWrap" class="custom-text hidden"><span>Nội dung tùy chỉnh</span><textarea id="customText" rows="5" placeholder="Dán nội dung của bạn vào đây. Nội dung sẽ được lặp lại giữa các trang nếu cần."></textarea></label>
-
-        <div class="toggle-row">
-          <label class="toggle"><input id="showCaption" type="checkbox" checked /><span>Chú thích ảnh</span></label>
-          <label class="toggle"><input id="showPageNumber" type="checkbox" checked /><span>Số trang</span></label>
-          <label class="toggle"><input id="showHeading" type="checkbox" checked /><span>Tiêu đề mục</span></label>
-        </div>
+        <div class="toggle-row"><label class="toggle"><input id="showCaption" type="checkbox" checked /><span>Chú thích ảnh</span></label><label class="toggle"><input id="showPageNumber" type="checkbox" checked /><span>Số trang</span></label><label class="toggle"><input id="showHeading" type="checkbox" checked /><span>Tiêu đề mục</span></label></div>
 
         <div class="section-title upload-heading"><h2>Hình ảnh</h2><span>Tùy chọn · kéo để đổi thứ tự</span></div>
-        <label id="dropZone" class="drop-zone">
-          <input id="imageInput" type="file" accept="image/*" multiple hidden />
-          <div class="drop-icon">+</div><strong>Thả ảnh vào đây</strong><small>hoặc bấm để chọn JPG / PNG / WEBP</small>
-        </label>
+        <label id="dropZone" class="drop-zone"><input id="imageInput" type="file" accept="image/*" multiple hidden /><div class="drop-icon">+</div><strong>Thả ảnh vào đây</strong><small>hoặc bấm để chọn JPG / PNG / WEBP</small></label>
         <div id="previewList" class="preview-list"></div>
-
         <div class="mode-row"><span>Cách hiển thị ảnh</span><label><input type="radio" name="imageMode" value="cover" checked /> Phủ kín</label><label><input type="radio" name="imageMode" value="contain" /> Vừa khung</label><label><input type="radio" name="imageMode" value="stretch" /> Kéo giãn</label></div>
-
         <button id="generateBtn" class="primary">Tạo PDF</button>
       </div>
 
       <aside class="card status-card">
         <div class="section-title"><h2>Xem trước nhiều trang</h2><span id="previewTag">Trang 1 / 20</span></div>
-        <div class="preview-toolbar">
-          <button id="previewPrev" type="button" class="preview-nav">← Trước</button>
-          <label class="preview-jump"><span>Trang</span><input id="previewPageInput" type="number" min="1" value="1" /><span id="previewTotal">/ 20</span></label>
-          <button id="previewNext" type="button" class="preview-nav">Sau →</button>
-        </div>
+        <div class="preview-toolbar"><button id="previewPrev" type="button" class="preview-nav">← Trước</button><label class="preview-jump"><span>Trang</span><input id="previewPageInput" type="number" min="1" value="1" /><span id="previewTotal">/ 20</span></label><button id="previewNext" type="button" class="preview-nav">Sau →</button></div>
         <div class="page-preview-wrap"><canvas id="pagePreview" width="420" height="594"></canvas></div>
         <div class="thumbnail-head"><span>Danh sách trang</span><small>Bấm thumbnail để xem</small></div>
         <div id="previewThumbnails" class="preview-thumbnails" aria-label="Thumbnail các trang"></div>
-
         <div class="section-title output-title"><h2>Kết quả</h2><span id="statusTag">Sẵn sàng</span></div>
-        <div class="metric"><span>Số trang</span><strong id="metricPages">20</strong></div>
-        <div class="metric"><span>Dung lượng</span><strong id="metricSize">300 MB</strong></div>
-        <div class="metric"><span>Số byte</span><strong id="metricBytes">314,572,800</strong></div>
-        <div class="metric"><span>Số ảnh</span><strong id="metricImages">0</strong></div>
-
+        <div class="metric"><span>Số trang</span><strong id="metricPages">20</strong></div><div class="metric"><span>Dung lượng</span><strong id="metricSize">300 MB</strong></div><div class="metric"><span>Số byte</span><strong id="metricBytes">314,572,800</strong></div><div class="metric"><span>Số ảnh</span><strong id="metricImages">0</strong></div>
         <div class="progress-wrap"><div class="progress-track"><div id="progressBar" class="progress-bar"></div></div><div class="progress-meta"><span id="progressLabel">Đang chờ</span><span id="progressPercent">0%</span></div></div>
         <div id="resultBox" class="result-box hidden"><div class="check">✓</div><div><strong>Đã tạo PDF</strong><small id="resultSummary"></small></div></div>
         <a id="downloadBtn" class="download disabled" href="#">Tải PDF</a>
@@ -85,8 +64,8 @@
       </aside>
     </section>
   </main>
-
-  <script src="app.js?v=7"></script>
-  <script src="patch.js?v=7"></script>
+  <script src="app.js?v=8"></script>
+  <script src="patch.js?v=8"></script>
+  <script src="qa-tools.js?v=8"></script>
 </body>
 </html>
