@@ -1,8 +1,6 @@
 name: Build 300MB PDF
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -31,8 +29,11 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release delete pdf-300mb --cleanup-tag -y || true
-          gh release create pdf-300mb \
-            test_20_pages_300mb.pdf \
-            --title "20-page 300MB Test PDF" \
-            --notes "20-page PDF with an exact size of 300 MiB (314,572,800 bytes)."
+          if gh release view pdf-300mb >/dev/null 2>&1; then
+            gh release upload pdf-300mb test_20_pages_300mb.pdf --clobber
+          else
+            gh release create pdf-300mb \
+              test_20_pages_300mb.pdf \
+              --title "20-page 300MB Test PDF" \
+              --notes "20-page PDF with an exact size of 300 MiB (314,572,800 bytes)."
+          fi
