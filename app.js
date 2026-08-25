@@ -1,0 +1,150 @@
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => [...document.querySelectorAll(s)];
+const enc = new TextEncoder();
+
+const els = {
+  fileName: $('#fileName'), pages: $('#pageCount'), size: $('#targetSize'), unit: $('#sizeUnit'),
+  input: $('#imageInput'), drop: $('#dropZone'), previews: $('#previewList'), generate: $('#generateBtn'),
+  mPages: $('#metricPages'), mSize: $('#metricSize'), mBytes: $('#metricBytes'), mImages: $('#metricImages'),
+  bar: $('#progressBar'), label: $('#progressLabel'), percent: $('#progressPercent'), tag: $('#statusTag'),
+  result: $('#resultBox'), summary: $('#resultSummary'), download: $('#downloadBtn')
+};
+
+let images = [];
+let currentUrl = null;
+
+function targetBytes() {
+  const n = Math.max(1, Number(els.size.value) || 1);
+  return Math.round(n * (els.unit.value === 'gib' ? 1024 ** 3 : 1024 ** 2));
+}
+function sizeLabel() {
+  const n = Number(els.size.value) || 0;
+  return `${n} ${els.unit.value === 'gib' ? 'GB' : 'MB'}`;
+}
+function syncMetrics() {
+  els.mPages.textContent = Math.max(1, Number(els.pages.value) || 1).toLocaleString();
+  els.mSize.textContent = sizeLabel();
+  els.mBytes.textContent = targetBytes().toLocaleString();
+  els.mImages.textContent = images.length;
+}
+function progress(value, label) {
+  const v = Math.max(0, Math.min(100, Math.round(value)));
+  els.bar.style.width = `${v}%`; els.percent.textContent = `${v}%`; els.label.textContent = label;
+}
+function safePdfText(s) { return String(s).replace(/\\/g, '\\\\').replace(/\(/g, '\\(').replace(/\)/g, '\\)'); }
+function concat(parts) {
+  const len = parts.reduce((n,p)=>n+p.length,0), out = new Uint8Array(len); let at=0;
+  for (const p of parts) { out.set(p,at); at += p.length; } return out;
+}
+function u8(s) { return enc.encode(s); }
+
+async function fileToJpeg(file) {
+  const bitmap = await createImageBitmap(file);
+  const max = 1600, scale = Math.min(1, max / Math.max(bitmap.width, bitmap.height));
+  const w = Math.max(1, Math.round(bitmap.width * scale)), h = Math.max(1, Math.round(bitmap.height * scale));
+  const canvas = document.createElement('canvas'); canvas.width=w; canvas.height=h;
+  const ctx=canvas.getContext('2d'); ctx.fillStyle='#fff'; ctx.fillRect(0,0,w,h); ctx.drawImage(bitmap,0,0,w,h);
+  bitmap.close();
+  const blob = await new Promise(r=>canvas.toBlob(r,'image/jpeg',0.82));
+  return { bytes:new Uint8Array(await blob.arrayBuffer()), width:w, height:h, name:file.name, url:URL.createObjectURL(file) };
+}
+
+async function addFiles(files) {
+  const valid=[...files].filter(f=>f.type.startsWith('image/'));
+  for (const f of valid) {
+    try { images.push(await fileToJpeg(f)); renderPreviews(); syncMetrics(); }
+    catch(e) { console.warn('Image skipped', f.name, e); }
+  }
+}
+function renderPreviews() {
+  els.previews.innerHTML='';
+  images.forEach((im,i)=>{
+    const d=document.createElement('div'); d.className='preview';
+    const img=document.createElement('img'); img.src=im.url; img.alt=im.name;
+    const b=document.createElement('button'); b.textContent='×'; b.type='button';
+    b.onclick=()=>{ URL.revokeObjectURL(images[i].url); images.splice(i,1); renderPreviews(); syncMetrics(); };
+    d.append(img,b); els.previews.append(d);
+  });
+}
+
+function imagePlacement(iw, ih, mode) {
+  const pw=595, ph=842;
+  if (mode==='stretch') return {x:0,y:0,w:pw,h:ph};
+  const scale = mode==='cover' ? Math.max(pw/iw,ph/ih) : Math.min(pw/iw,ph/ih);
+  const w=iw*scale,h=ih*scale; return {x:(pw-w)/2,y:(ph-h)/2,w,h};
+}
+
+async function buildPdf(pageCount, fileName) {
+  const objs=[];
+  const pageNums=[];
+  const imageObjNums=[];
+  let next=3;
+  for(let i=0;i<images.length;i++) imageObjNums.push(next++);
+  for(let i=0;i<pageCount;i++){ pageNums.push(next); next+=2; }
+
+  objs[1]=u8('<< /Type /Catalog /Pages 2 0 R >>');
+  objs[2]=u8(`<< /Type /Pages /Count ${pageCount} /Kids [ ${pageNums.map(n=>`${n} 0 R`).join(' ')} ] >>`);
+
+  images.forEach((im,i)=>{
+    const head=u8(`<< /Type /XObject /Subtype /Image /Width ${im.width} /Height ${im.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${im.bytes.length} >>\nstream\n`);
+    objs[imageObjNums[i]]=concat([head,im.bytes,u8('\nendstream')]);
+  });
+
+  const mode=$('input[name="imageMode"]:checked').value;
+  for(let i=0;i<pageCount;i++){
+    const pObj=pageNums[i], cObj=pObj+1, im=images.length?images[i%images.length]:null;
+    let resources='<< /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> >>';
+    let content='';
+    if(im){
+      const idx=i%images.length, place=imagePlacement(im.width,im.height,mode);
+      resources += ` /XObject << /Im0 ${imageObjNums[idx]} 0 R >>`;
+      content += `q\n${place.w.toFixed(2)} 0 0 ${place.h.toFixed(2)} ${place.x.toFixed(2)} ${place.y.toFixed(2)} cm\n/Im0 Do\nQ\n`;
+    } else {
+      content += `BT\n/F1 28 Tf\n72 760 Td\n(${safePdfText(fileName)}) Tj\n/F1 15 Tf\n0 -38 Td\n(Page ${i+1} of ${pageCount}) Tj\n0 -26 Td\n(Generated by Large PDF Generator) Tj\nET\n`;
+    }
+    resources += ' >>';
+    objs[pObj]=u8(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources ${resources} /Contents ${cObj} 0 R >>`);
+    const cb=u8(content); objs[cObj]=concat([u8(`<< /Length ${cb.length} >>\nstream\n`),cb,u8('endstream')]);
+    if(i%10===0){ progress(5+Math.round((i/pageCount)*35),`Building page ${i+1}/${pageCount}`); await new Promise(r=>setTimeout(r,0)); }
+  }
+
+  const parts=[u8('%PDF-1.4\n%LargePDFGenerator\n')], offsets=[0]; let length=parts[0].length;
+  for(let n=1;n<objs.length;n++) if(objs[n]){ offsets[n]=length; const p=concat([u8(`${n} 0 obj\n`),objs[n],u8('\nendobj\n')]); parts.push(p); length+=p.length; }
+  const xrefAt=length, maxObj=objs.length-1;
+  let xref=`xref\n0 ${maxObj+1}\n0000000000 65535 f \n`;
+  for(let n=1;n<=maxObj;n++) xref += `${String(offsets[n]||0).padStart(10,'0')} 00000 n \n`;
+  const tail=u8(xref+`trailer\n<< /Size ${maxObj+1} /Root 1 0 R >>\nstartxref\n${xrefAt}\n%%EOF\n`);
+  parts.push(tail); return {parts, baseSize:length+tail.length};
+}
+
+async function generate() {
+  const pageCount=Math.max(1,Math.min(1000,Number(els.pages.value)||1));
+  const bytes=targetBytes(); let name=(els.fileName.value||'large-test.pdf').trim(); if(!name.toLowerCase().endsWith('.pdf')) name+='.pdf';
+  els.generate.disabled=true; els.download.classList.add('disabled'); els.result.classList.add('hidden'); els.tag.textContent='Working'; progress(2,'Preparing');
+  if(currentUrl){URL.revokeObjectURL(currentUrl);currentUrl=null;}
+  try{
+    const {parts,baseSize}=await buildPdf(pageCount,name);
+    if(baseSize>bytes) throw new Error(`Content is already ${(baseSize/1024/1024).toFixed(1)} MB. Choose a larger target size or fewer/smaller images.`);
+    progress(55,'Padding to exact size'); await new Promise(r=>setTimeout(r,0));
+    const remaining=bytes-baseSize;
+    // Blob accepts multiple parts without allocating one giant contiguous JS buffer.
+    const chunkSize=8*1024*1024, zeroChunk=new Uint8Array(chunkSize); let left=remaining;
+    while(left>0){ const n=Math.min(left,chunkSize); parts.push(n===chunkSize?zeroChunk:new Uint8Array(n)); left-=n; }
+    progress(82,'Creating browser file'); await new Promise(r=>setTimeout(r,20));
+    const blob=new Blob(parts,{type:'application/pdf'});
+    if(blob.size!==bytes) throw new Error('Could not reach the exact requested file size.');
+    currentUrl=URL.createObjectURL(blob); els.download.href=currentUrl; els.download.download=name; els.download.classList.remove('disabled');
+    els.summary.textContent=`${pageCount} pages • ${sizeLabel()} • ${blob.size.toLocaleString()} bytes`;
+    els.result.classList.remove('hidden'); els.tag.textContent='Complete'; progress(100,'Done');
+  }catch(err){ console.error(err); els.tag.textContent='Error'; progress(0,err.message); alert(err.message); }
+  finally{ els.generate.disabled=false; }
+}
+
+els.input.addEventListener('change',e=>addFiles(e.target.files));
+['dragenter','dragover'].forEach(ev=>els.drop.addEventListener(ev,e=>{e.preventDefault();els.drop.classList.add('drag')}));
+['dragleave','drop'].forEach(ev=>els.drop.addEventListener(ev,e=>{e.preventDefault();els.drop.classList.remove('drag')}));
+els.drop.addEventListener('drop',e=>addFiles(e.dataTransfer.files));
+els.generate.addEventListener('click',generate);
+[els.pages,els.size,els.unit].forEach(e=>e.addEventListener('input',syncMetrics));
+$$('.chip').forEach(c=>c.onclick=()=>{ $$('.chip').forEach(x=>x.classList.remove('active')); c.classList.add('active'); const n=Number(c.dataset.size); if(n===1024){els.size.value=1;els.unit.value='gib'}else{els.size.value=n;els.unit.value='mib'} syncMetrics(); });
+syncMetrics();
