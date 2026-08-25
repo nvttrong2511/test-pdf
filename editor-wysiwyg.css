@@ -1,0 +1,22 @@
+/* Bảo toàn định dạng WYSIWYG từ rich editor sang preview/PDF render. */
+.rich-page .editor-html{font-size:1.65%;line-height:1.6;color:#1b1f27;white-space:normal}
+.rich-page .editor-html p{margin:0 0 1.7%;white-space:pre-wrap}
+.rich-page .editor-html h1{font-size:4.5%;line-height:1.15;margin:0 0 2.5%;font-weight:700}
+.rich-page .editor-html h2{font-size:3.2%;line-height:1.2;margin:3.2% 0 1.7%;font-weight:700}
+.rich-page .editor-html h3{font-size:2.4%;line-height:1.25;margin:2.6% 0 1.4%;font-weight:700}
+.rich-page .editor-html strong,.rich-page .editor-html b{font-weight:700}
+.rich-page .editor-html em,.rich-page .editor-html i{font-style:italic}
+.rich-page .editor-html u{text-decoration:underline}
+.rich-page .editor-html blockquote{margin:2% 0;padding:1.5% 2%;border-left:4px solid #313844;background:#f5f6f8;color:#4b535f}
+.rich-page .editor-html ul,.rich-page .editor-html ol{margin:1.2% 0 2.2% 4%;padding-left:2%}
+.rich-page .editor-html li{margin:.5% 0}
+.rich-page .editor-html .ql-align-center{text-align:center}
+.rich-page .editor-html .ql-align-right{text-align:right}
+.rich-page .editor-html .ql-align-justify{text-align:justify}
+.rich-page .editor-html .ql-indent-1{padding-left:3em}
+.rich-page .editor-html .ql-indent-2{padding-left:6em}
+.rich-page .editor-html .ql-indent-3{padding-left:9em}
+.rich-page .editor-html [data-list="bullet"]{list-style-type:disc}
+.rich-page .editor-html [data-list="ordered"]{list-style-type:decimal}
+.rich-page .editor-html br{display:block;content:"";margin-top:.45em}
+.rich-render-page .editor-html{font-family:Arial,"Helvetica Neue",sans-serif}
