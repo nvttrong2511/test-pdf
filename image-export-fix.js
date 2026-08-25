@@ -31,9 +31,9 @@
         }
       }catch(e){console.warn('Không thể chuẩn hóa ảnh để xuất PDF',e)}
     }));
+    $('#previewPageInput')?.dispatchEvent(new Event('input',{bubbles:true}));
   }
 
-  // Khi có ảnh mới, đổi blob URL sang data URL để html2canvas luôn đọc được.
   const list=$('#previewList');
   if(list){
     const mo=new MutationObserver(()=>{normalizePreviewImages()});
@@ -41,24 +41,5 @@
     normalizePreviewImages();
   }
 
-  // Chạy trước listener tạo PDF của rich-doc.js.
-  document.addEventListener('click',async e=>{
-    const btn=e.target.closest?.('#generateBtn');
-    if(!btn||$('#batchEnabled')?.checked) return;
-    // Không chặn event, chỉ chuẩn hóa ảnh trước. Listener tạo PDF phía sau sẽ dùng data URL.
-    try{
-      e.stopImmediatePropagation();
-      await normalizePreviewImages();
-      // Phát lại click sau khi ảnh đã sẵn sàng. Dùng cờ để tránh lặp vô hạn.
-      if(btn.dataset.imageReadyClick==='1'){
-        delete btn.dataset.imageReadyClick;
-        return;
-      }
-      btn.dataset.imageReadyClick='1';
-      setTimeout(()=>btn.click(),0);
-    }catch(err){
-      console.error(err);
-      alert('Không thể chuẩn bị ảnh để tạo PDF: '+(err.message||err));
-    }
-  },true);
+  window.__normalizePdfImages=normalizePreviewImages;
 })();
