@@ -21,14 +21,13 @@
       <strong>Áp dụng công cụ kiểm thử nâng cao vào PDF chính</strong>
       <small>Bật: các tùy chọn bên dưới sẽ được đưa vào file PDF. Tắt: tạo PDF thông thường và bỏ qua toàn bộ cấu hình nâng cao.</small>
     </div>
-    <input id="applyAdvancedToPdf" type="checkbox" checked />`;
+    <input id="applyAdvancedToPdf" type="checkbox" />`;
 
   const note = $('.qa-apply-note', panel);
   if (note) note.replaceWith(toggleBox);
   else $('.section-title', panel)?.insertAdjacentElement('afterend', toggleBox);
 
   const toggle = $('#applyAdvancedToPdf');
-  const batchSection = $('.batch-section');
   const summary = $('#advancedApplySummary');
 
   function enabled() { return !!toggle?.checked; }
@@ -48,7 +47,6 @@
     panel.classList.toggle('advanced-disabled', !on);
     panel.querySelectorAll('input,select,textarea,button').forEach(el => {
       if (el === toggle) return;
-      // Nút/cấu hình tạo hàng loạt nằm ngoài panel nên không bị ảnh hưởng.
       el.disabled = !on;
     });
     if (summary) {
@@ -63,7 +61,6 @@
     try { if (typeof window.drawPreview === 'function') window.drawPreview(); } catch (_) {}
   }
 
-  // Bảo đảm trạng thái được kiểm tra ngay trước khi tạo file.
   const generateBtn = $('#generateBtn');
   generateBtn?.addEventListener('click', applyPipeline, true);
   const hiddenBatchBtn = $('#batchBtn');
