@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Trình tạo PDF dung lượng lớn</title>
   <meta name="description" content="Tạo file PDF dung lượng lớn trực tiếp trên trình duyệt để kiểm thử upload, lưu trữ và hiệu năng." />
-  <link rel="stylesheet" href="style.css?v=18" />
-  <link rel="stylesheet" href="sync-ui.css?v=18" />
-  <link rel="stylesheet" href="advanced-apply.css?v=18" />
+  <link rel="stylesheet" href="style.css?v=19" />
+  <link rel="stylesheet" href="sync-ui.css?v=19" />
+  <link rel="stylesheet" href="advanced-apply.css?v=19" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" />
-  <link rel="stylesheet" href="rich-doc.css?v=18" />
-  <link rel="stylesheet" href="editor-fix.css?v=18" />
+  <link rel="stylesheet" href="rich-doc.css?v=19" />
+  <link rel="stylesheet" href="editor-fix.css?v=19" />
 </head>
 <body>
   <main class="shell">
@@ -44,7 +44,7 @@
           <label><span>Mật độ chữ</span><select id="textDensity"><option value="low">Ít</option><option value="medium" selected>Vừa</option><option value="high">Nhiều</option></select></label>
           <label><span>Bố cục trang</span><select id="layoutMode"><option value="random">Trộn ngẫu nhiên</option><option value="text-image">Chữ trên + ảnh dưới</option><option value="image-text">Ảnh trên + chữ dưới</option><option value="full-image">Ảnh toàn trang</option><option value="text-only">Chỉ có chữ</option></select></label>
         </div>
-        <label id="customTextWrap" class="custom-text hidden"><textarea id="customText" rows="5"></textarea></label>
+        <input id="customText" type="hidden" value="" />
         <div class="toggle-row"><label class="toggle"><input id="showCaption" type="checkbox" checked /><span>Chú thích ảnh</span></label><label class="toggle"><input id="showPageNumber" type="checkbox" checked /><span>Số trang</span></label><label class="toggle"><input id="showHeading" type="checkbox" checked /><span>Tiêu đề mục</span></label></div>
 
         <div class="section-title upload-heading"><h2>Hình ảnh</h2><span>Tùy chọn · kéo để đổi thứ tự</span></div>
@@ -69,17 +69,17 @@
       </aside>
     </section>
   </main>
-  <script src="app.js?v=18"></script>
-  <script src="patch.js?v=18"></script>
-  <script src="qa-tools.js?v=18"></script>
-  <script src="sync-ui.js?v=18"></script>
-  <script src="advanced-base.js?v=18"></script>
-  <script src="advanced-apply.js?v=18"></script>
-  <script src="template-bind.js?v=18"></script>
+  <script src="app.js?v=19"></script>
+  <script src="patch.js?v=19"></script>
+  <script src="qa-tools.js?v=19"></script>
+  <script src="sync-ui.js?v=19"></script>
+  <script src="advanced-base.js?v=19"></script>
+  <script src="advanced-apply.js?v=19"></script>
+  <script src="template-bind.js?v=19"></script>
   <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
-  <script src="rich-doc.js?v=18"></script>
-  <script src="editor-fix.js?v=18"></script>
+  <script src="rich-doc.js?v=19"></script>
+  <script src="editor-fix.js?v=19"></script>
 </body>
 </html>
