@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Trình tạo PDF dung lượng lớn</title>
   <meta name="description" content="Tạo file PDF dung lượng lớn trực tiếp trên trình duyệt để kiểm thử upload, lưu trữ và hiệu năng." />
-  <link rel="stylesheet" href="style.css?v=6" />
+  <link rel="stylesheet" href="style.css?v=7" />
 </head>
 <body>
   <main class="shell">
@@ -62,8 +62,15 @@
       </div>
 
       <aside class="card status-card">
-        <div class="section-title"><h2>Xem trước</h2><span id="previewTag">Trang 1</span></div>
+        <div class="section-title"><h2>Xem trước nhiều trang</h2><span id="previewTag">Trang 1 / 20</span></div>
+        <div class="preview-toolbar">
+          <button id="previewPrev" type="button" class="preview-nav">← Trước</button>
+          <label class="preview-jump"><span>Trang</span><input id="previewPageInput" type="number" min="1" value="1" /><span id="previewTotal">/ 20</span></label>
+          <button id="previewNext" type="button" class="preview-nav">Sau →</button>
+        </div>
         <div class="page-preview-wrap"><canvas id="pagePreview" width="420" height="594"></canvas></div>
+        <div class="thumbnail-head"><span>Danh sách trang</span><small>Bấm thumbnail để xem</small></div>
+        <div id="previewThumbnails" class="preview-thumbnails" aria-label="Thumbnail các trang"></div>
 
         <div class="section-title output-title"><h2>Kết quả</h2><span id="statusTag">Sẵn sàng</span></div>
         <div class="metric"><span>Số trang</span><strong id="metricPages">20</strong></div>
@@ -79,7 +86,7 @@
     </section>
   </main>
 
-  <script src="app.js?v=6"></script>
-  <script src="patch.js?v=6"></script>
+  <script src="app.js?v=7"></script>
+  <script src="patch.js?v=7"></script>
 </body>
 </html>
