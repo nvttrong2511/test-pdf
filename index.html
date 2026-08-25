@@ -1,76 +1,85 @@
 <!doctype html>
-<html lang="en">
+<html lang="vi">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Large PDF Generator</title>
-  <meta name="description" content="Generate large PDF test files directly in your browser." />
-  <link rel="stylesheet" href="style.css" />
+  <title>Trình tạo PDF dung lượng lớn</title>
+  <meta name="description" content="Tạo file PDF dung lượng lớn trực tiếp trên trình duyệt để kiểm thử upload, lưu trữ và hiệu năng." />
+  <link rel="stylesheet" href="style.css?v=5" />
 </head>
 <body>
   <main class="shell">
     <section class="hero">
       <div>
-        <span class="eyebrow">CLIENT-SIDE TOOL</span>
-        <h1>Large PDF Generator</h1>
-        <p>Create realistic large PDF files with mixed text and images for upload, storage, CDN, timeout, OCR, viewer, and stress testing.</p>
+        <span class="eyebrow">CÔNG CỤ CHẠY TRÊN TRÌNH DUYỆT</span>
+        <h1>Trình tạo PDF dung lượng lớn</h1>
+        <p>Tạo file PDF thực tế với văn bản và hình ảnh đan xen để kiểm thử upload, lưu trữ, CDN, timeout, OCR, trình xem PDF và hiệu năng hệ thống.</p>
       </div>
-      <div class="badge">No server upload</div>
+      <div class="badge">Không tải ảnh lên máy chủ</div>
     </section>
 
     <section class="panel grid">
       <div class="card form-card">
-        <div class="section-title"><h2>PDF settings</h2><span>Exact output size</span></div>
-        <label><span>File name</span><input id="fileName" type="text" value="test-300mb.pdf" /></label>
+        <div class="section-title"><h2>Cấu hình PDF</h2><span>Dung lượng chính xác</span></div>
+        <label><span>Tên file</span><input id="fileName" type="text" value="test-300mb.pdf" /></label>
         <div class="two-col">
-          <label><span>Pages</span><input id="pageCount" type="number" min="1" max="1000" value="20" /></label>
-          <label><span>Target size</span><div class="input-group"><input id="targetSize" type="number" min="1" step="1" value="300" /><select id="sizeUnit"><option value="mib">MB</option><option value="gib">GB</option></select></div></label>
+          <label><span>Số trang</span><input id="pageCount" type="number" min="1" max="1000" value="20" /></label>
+          <label><span>Dung lượng mục tiêu</span><div class="input-group"><input id="targetSize" type="number" min="1" step="1" value="300" /><select id="sizeUnit"><option value="mib">MB</option><option value="gib">GB</option></select></div></label>
         </div>
         <div class="preset-row"><button class="chip" data-size="10">10 MB</button><button class="chip" data-size="100">100 MB</button><button class="chip active" data-size="300">300 MB</button><button class="chip" data-size="500">500 MB</button><button class="chip" data-size="1024">1 GB</button></div>
+
         <div class="three-col advanced-row">
-          <label><span>Page size</span><select id="pageSize"><option value="a4">A4</option><option value="letter">Letter</option><option value="legal">Legal</option></select></label>
-          <label><span>Orientation</span><select id="orientation"><option value="portrait">Portrait</option><option value="landscape">Landscape</option></select></label>
-          <label><span>Image quality <b id="qualityValue">82%</b></span><input id="imageQuality" class="range" type="range" min="35" max="100" value="82" /></label>
+          <label><span>Khổ giấy</span><select id="pageSize"><option value="a4">A4</option><option value="letter">Letter</option><option value="legal">Legal</option></select></label>
+          <label><span>Hướng giấy</span><select id="orientation"><option value="portrait">Dọc</option><option value="landscape">Ngang</option></select></label>
+          <label><span>Chất lượng ảnh <b id="qualityValue">82%</b></span><input id="imageQuality" class="range" type="range" min="35" max="100" value="82" /></label>
         </div>
 
-        <div class="section-title content-heading"><h2>Document content</h2><span>Text + image mix</span></div>
+        <div class="section-title content-heading"><h2>Nội dung tài liệu</h2><span>Chữ + ảnh đan xen</span></div>
         <div class="three-col">
-          <label><span>Text mode</span><select id="textMode"><option value="auto">Auto dummy text</option><option value="custom">Custom text</option><option value="none">No text</option></select></label>
-          <label><span>Text density</span><select id="textDensity"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select></label>
-          <label><span>Page layout</span><select id="layoutMode"><option value="random">Random mix</option><option value="text-image">Text + image</option><option value="image-text">Image + text</option><option value="full-image">Full image</option><option value="text-only">Text only</option></select></label>
-        </div>
-        <label id="customTextWrap" class="custom-text hidden"><span>Custom text</span><textarea id="customText" rows="5" placeholder="Paste your document text here. It will repeat across pages if necessary."></textarea></label>
-        <div class="toggle-row">
-          <label class="toggle"><input id="showCaption" type="checkbox" checked /><span>Image captions</span></label>
-          <label class="toggle"><input id="showPageNumber" type="checkbox" checked /><span>Page numbers</span></label>
-          <label class="toggle"><input id="showHeading" type="checkbox" checked /><span>Section headings</span></label>
+          <label><span>Chế độ văn bản</span><select id="textMode"><option value="auto">Tự tạo nội dung mẫu</option><option value="custom">Nội dung tùy chỉnh</option><option value="none">Không có chữ</option></select></label>
+          <label><span>Mật độ chữ</span><select id="textDensity"><option value="low">Ít</option><option value="medium" selected>Vừa</option><option value="high">Nhiều</option></select></label>
+          <label><span>Bố cục trang</span><select id="layoutMode"><option value="random">Trộn ngẫu nhiên</option><option value="text-image">Chữ trên + ảnh dưới</option><option value="image-text">Ảnh trên + chữ dưới</option><option value="full-image">Ảnh toàn trang</option><option value="text-only">Chỉ có chữ</option></select></label>
         </div>
 
-        <div class="section-title upload-heading"><h2>Images</h2><span>Optional · drag to reorder</span></div>
+        <label id="customTextWrap" class="custom-text hidden"><span>Nội dung tùy chỉnh</span><textarea id="customText" rows="5" placeholder="Dán nội dung của bạn vào đây. Nội dung sẽ được lặp lại giữa các trang nếu cần."></textarea></label>
+
+        <div class="toggle-row">
+          <label class="toggle"><input id="showCaption" type="checkbox" checked /><span>Chú thích ảnh</span></label>
+          <label class="toggle"><input id="showPageNumber" type="checkbox" checked /><span>Số trang</span></label>
+          <label class="toggle"><input id="showHeading" type="checkbox" checked /><span>Tiêu đề mục</span></label>
+        </div>
+
+        <div class="section-title upload-heading"><h2>Hình ảnh</h2><span>Tùy chọn · kéo để đổi thứ tự</span></div>
         <label id="dropZone" class="drop-zone">
           <input id="imageInput" type="file" accept="image/*" multiple hidden />
-          <div class="drop-icon">+</div><strong>Drop images here</strong><small>or click to browse JPG / PNG / WEBP</small>
+          <div class="drop-icon">+</div><strong>Thả ảnh vào đây</strong><small>hoặc bấm để chọn JPG / PNG / WEBP</small>
         </label>
         <div id="previewList" class="preview-list"></div>
-        <div class="mode-row"><span>Image fit</span><label><input type="radio" name="imageMode" value="cover" checked /> Cover</label><label><input type="radio" name="imageMode" value="contain" /> Contain</label><label><input type="radio" name="imageMode" value="stretch" /> Stretch</label></div>
-        <button id="generateBtn" class="primary">Generate PDF</button>
+
+        <div class="mode-row"><span>Cách hiển thị ảnh</span><label><input type="radio" name="imageMode" value="cover" checked /> Phủ kín</label><label><input type="radio" name="imageMode" value="contain" /> Vừa khung</label><label><input type="radio" name="imageMode" value="stretch" /> Kéo giãn</label></div>
+
+        <button id="generateBtn" class="primary">Tạo PDF</button>
       </div>
 
       <aside class="card status-card">
-        <div class="section-title"><h2>Live preview</h2><span id="previewTag">Page 1</span></div>
+        <div class="section-title"><h2>Xem trước</h2><span id="previewTag">Trang 1</span></div>
         <div class="page-preview-wrap"><canvas id="pagePreview" width="420" height="594"></canvas></div>
-        <div class="section-title output-title"><h2>Output</h2><span id="statusTag">Ready</span></div>
-        <div class="metric"><span>Pages</span><strong id="metricPages">20</strong></div>
-        <div class="metric"><span>Target</span><strong id="metricSize">300 MB</strong></div>
-        <div class="metric"><span>Bytes</span><strong id="metricBytes">314,572,800</strong></div>
-        <div class="metric"><span>Images</span><strong id="metricImages">0</strong></div>
-        <div class="progress-wrap"><div class="progress-track"><div id="progressBar" class="progress-bar"></div></div><div class="progress-meta"><span id="progressLabel">Waiting</span><span id="progressPercent">0%</span></div></div>
-        <div id="resultBox" class="result-box hidden"><div class="check">✓</div><div><strong>PDF generated</strong><small id="resultSummary"></small></div></div>
-        <a id="downloadBtn" class="download disabled" href="#">Download PDF</a>
-        <p class="hint">Large files can use significant browser memory. For very large outputs, keep other heavy tabs closed.</p>
+
+        <div class="section-title output-title"><h2>Kết quả</h2><span id="statusTag">Sẵn sàng</span></div>
+        <div class="metric"><span>Số trang</span><strong id="metricPages">20</strong></div>
+        <div class="metric"><span>Dung lượng</span><strong id="metricSize">300 MB</strong></div>
+        <div class="metric"><span>Số byte</span><strong id="metricBytes">314,572,800</strong></div>
+        <div class="metric"><span>Số ảnh</span><strong id="metricImages">0</strong></div>
+
+        <div class="progress-wrap"><div class="progress-track"><div id="progressBar" class="progress-bar"></div></div><div class="progress-meta"><span id="progressLabel">Đang chờ</span><span id="progressPercent">0%</span></div></div>
+        <div id="resultBox" class="result-box hidden"><div class="check">✓</div><div><strong>Đã tạo PDF</strong><small id="resultSummary"></small></div></div>
+        <a id="downloadBtn" class="download disabled" href="#">Tải PDF</a>
+        <p class="hint">File dung lượng lớn có thể sử dụng nhiều RAM. Khi tạo file rất lớn, nên đóng bớt các tab nặng để trình duyệt hoạt động ổn định hơn.</p>
       </aside>
     </section>
   </main>
-  <script src="app.js"></script>
+
+  <script src="app.js?v=5"></script>
+  <script src="patch.js?v=5"></script>
 </body>
 </html>
