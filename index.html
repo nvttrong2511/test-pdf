@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Trình tạo PDF dung lượng lớn</title>
   <meta name="description" content="Tạo file PDF dung lượng lớn trực tiếp trên trình duyệt để kiểm thử upload, lưu trữ và hiệu năng." />
-  <link rel="stylesheet" href="style.css?v=5" />
+  <link rel="stylesheet" href="style.css?v=6" />
 </head>
 <body>
   <main class="shell">
@@ -21,7 +21,7 @@
     <section class="panel grid">
       <div class="card form-card">
         <div class="section-title"><h2>Cấu hình PDF</h2><span>Dung lượng chính xác</span></div>
-        <label><span>Tên file</span><input id="fileName" type="text" value="test-300mb.pdf" /></label>
+        <label><span>Tên file <small>(tự động thêm .pdf)</small></span><input id="fileName" type="text" value="test-300mb" /></label>
         <div class="two-col">
           <label><span>Số trang</span><input id="pageCount" type="number" min="1" max="1000" value="20" /></label>
           <label><span>Dung lượng mục tiêu</span><div class="input-group"><input id="targetSize" type="number" min="1" step="1" value="300" /><select id="sizeUnit"><option value="mib">MB</option><option value="gib">GB</option></select></div></label>
@@ -79,7 +79,7 @@
     </section>
   </main>
 
-  <script src="app.js?v=5"></script>
-  <script src="patch.js?v=5"></script>
+  <script src="app.js?v=6"></script>
+  <script src="patch.js?v=6"></script>
 </body>
 </html>
